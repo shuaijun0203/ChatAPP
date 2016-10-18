@@ -14,6 +14,7 @@
 		AC21DD101DB5A98C0095B903 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AC21DD0E1DB5A98C0095B903 /* LaunchScreen.storyboard */; };
 		AC21DD1B1DB5A98C0095B903 /* ChatTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC21DD1A1DB5A98C0095B903 /* ChatTests.swift */; };
 		AC21DD261DB5A98D0095B903 /* ChatUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC21DD251DB5A98D0095B903 /* ChatUITests.swift */; };
+		AC21DD351DB5AE830095B903 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC21DD341DB5AE830095B903 /* LoginController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		AC21DD211DB5A98C0095B903 /* ChatUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ChatUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC21DD251DB5A98D0095B903 /* ChatUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatUITests.swift; sourceTree = "<group>"; };
 		AC21DD271DB5A98D0095B903 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AC21DD341DB5AE830095B903 /* LoginController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,8 +99,8 @@
 		AC21DD041DB5A98C0095B903 /* Chat */ = {
 			isa = PBXGroup;
 			children = (
+				AC21DD331DB5AE5C0095B903 /* Controller */,
 				AC21DD051DB5A98C0095B903 /* AppDelegate.swift */,
-				AC21DD071DB5A98C0095B903 /* ViewController.swift */,
 				AC21DD091DB5A98C0095B903 /* Main.storyboard */,
 				AC21DD0C1DB5A98C0095B903 /* Assets.xcassets */,
 				AC21DD0E1DB5A98C0095B903 /* LaunchScreen.storyboard */,
@@ -123,6 +125,15 @@
 				AC21DD271DB5A98D0095B903 /* Info.plist */,
 			);
 			path = ChatUITests;
+			sourceTree = "<group>";
+		};
+		AC21DD331DB5AE5C0095B903 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				AC21DD071DB5A98C0095B903 /* ViewController.swift */,
+				AC21DD341DB5AE830095B903 /* LoginController.swift */,
+			);
+			name = Controller;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -260,6 +271,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AC21DD081DB5A98C0095B903 /* ViewController.swift in Sources */,
+				AC21DD351DB5AE830095B903 /* LoginController.swift in Sources */,
 				AC21DD061DB5A98C0095B903 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

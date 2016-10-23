@@ -25,21 +25,53 @@ class LoginController: UIViewController {
     
     lazy var loginRegisterButton:UIButton = {
         let button = UIButton()
-        button.backgroundColor = UIColor.init(r: 100, g: 81, b: 81)
+//        button.backgroundColor = UIColor.init(r: 100, g: 181, b: 181)
+        button.backgroundColor = UIColor.darkGray
         button.setTitle("Register", for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setTitleColor(UIColor.white, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
-        button.addTarget(self, action: #selector(registerHandle), for: .touchUpInside)
+        button.addTarget(self, action: #selector(loginRegisterHandle), for: .touchUpInside)
         
         return button
     }()
+    
+    func loginRegisterHandle(){
+        
+        if registerSegmentedController.selectedSegmentIndex == 0 {
+            loginHandle()
+        } else {
+            registerHandle()
+        }
+        
+    }
+
+    
+    func loginHandle(){
+        guard let email = inputEmailTextField.text, let password = inputPasswordTextField.text
+            else{
+                print("please insert the right email or password ")
+                return
+        }
+        
+        FIRAuth.auth()?.signIn(withEmail: email, password: password, completion: { (user, error) in
+            if user?.uid == nil {
+                self.inputEmailTextField.text = ""
+                self.inputPasswordTextField.text = ""
+                print(error)
+                return
+            }
+            
+            self.dismiss(animated:true, completion: nil)
+        })
+
+    }
 
     func registerHandle(){
         
         guard let email = inputEmailTextField.text, let password = inputPasswordTextField.text,let username = inputNameTextField.text
             else{
-                print("please insert the right email ")
+                print("please insert the right form ")
                 return
         }
         
@@ -66,11 +98,11 @@ class LoginController: UIViewController {
                     return
                 }
                 
+                self.dismiss(animated: true, completion: nil)
+                
                 print(" saved the user successfuly! ")
             })
             
-
-//            userRefs.updateChildValues(userInfo)
         })
     }
     
@@ -141,11 +173,28 @@ class LoginController: UIViewController {
         inputContainerHeightAnchor?.constant = registerSegmentedController.selectedSegmentIndex == 0 ? 100 : 150
         
         
-//        nameInputTextHeightAnchor?.isActive  = false
-//        
-//        nameInputTextHeightAnchor? = inputNameTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: registerSegmentedController.selectedSegmentIndex == 0 ? 0 : 1/3)
-//        
-//        nameInputTextHeightAnchor?.isActive  = true
+        nameInputTextHeightAnchor?.isActive  = false
+        nameInputTextHeightAnchor = inputNameTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: registerSegmentedController.selectedSegmentIndex == 0 ? 0 : 1/3)
+        nameInputTextHeightAnchor?.isActive  = true
+        
+        if registerSegmentedController.selectedSegmentIndex == 1 {
+            inputNameTextField.isHidden = false
+            nameSeperater.isHidden = false
+        }else {
+            inputNameTextField.isHidden = true
+            nameSeperater.isHidden = true
+
+
+        }
+        
+     
+        emailInputTextHeightAnchor?.isActive  = false
+        emailInputTextHeightAnchor = inputEmailTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: registerSegmentedController.selectedSegmentIndex == 0 ? 1/2 : 1/3)
+        emailInputTextHeightAnchor?.isActive  = true
+        
+        passwordInputTextHeightAnchor?.isActive  = false
+        passwordInputTextHeightAnchor = inputPasswordTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: registerSegmentedController.selectedSegmentIndex == 0 ? 1/2 : 1/3)
+        passwordInputTextHeightAnchor?.isActive  = true
     }
     
     
@@ -190,7 +239,9 @@ class LoginController: UIViewController {
         inputEmailTextField.leftAnchor.constraint(equalTo: inputsContainerView.leftAnchor, constant: 12).isActive = true
         inputEmailTextField.topAnchor.constraint(equalTo: inputNameTextField.bottomAnchor).isActive = true
         inputEmailTextField.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor).isActive = true
-        inputEmailTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3).isActive = true
+        emailInputTextHeightAnchor = inputEmailTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3)
+        emailInputTextHeightAnchor?.isActive = true
+//        inputEmailTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3).isActive = true
         
         //need x , y , width , height contraints
         emailSeperater.leftAnchor.constraint(equalTo: inputsContainerView.leftAnchor).isActive = true
@@ -202,7 +253,11 @@ class LoginController: UIViewController {
         inputPasswordTextField.leftAnchor.constraint(equalTo: inputsContainerView.leftAnchor, constant: 12).isActive = true
         inputPasswordTextField.topAnchor.constraint(equalTo: inputEmailTextField.bottomAnchor).isActive = true
         inputPasswordTextField.widthAnchor.constraint(equalTo: inputsContainerView.widthAnchor).isActive = true
-        inputPasswordTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3).isActive = true
+        
+        passwordInputTextHeightAnchor = inputPasswordTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3)
+        
+        passwordInputTextHeightAnchor?.isActive = true
+//        inputPasswordTextField.heightAnchor.constraint(equalTo: inputsContainerView.heightAnchor, multiplier: 1/3).isActive = true
 
         
     }

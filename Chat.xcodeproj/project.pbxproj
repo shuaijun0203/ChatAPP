@@ -611,6 +611,7 @@
 				CODE_SIGN_ENTITLEMENTS = Chat/Chat.entitlements;
 				DEVELOPMENT_TEAM = PTMZGU79QK;
 				INFOPLIST_FILE = Chat/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = jp.ac.jec.15cm.Chat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -626,6 +627,7 @@
 				CODE_SIGN_ENTITLEMENTS = Chat/Chat.entitlements;
 				DEVELOPMENT_TEAM = PTMZGU79QK;
 				INFOPLIST_FILE = Chat/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = jp.ac.jec.15cm.Chat;
 				PRODUCT_NAME = "$(TARGET_NAME)";

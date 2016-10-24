@@ -45,66 +45,6 @@ class LoginController: UIViewController {
         }
         
     }
-
-    
-    func loginHandle(){
-        guard let email = inputEmailTextField.text, let password = inputPasswordTextField.text
-            else{
-                print("please insert the right email or password ")
-                return
-        }
-        
-        FIRAuth.auth()?.signIn(withEmail: email, password: password, completion: { (user, error) in
-            if user?.uid == nil {
-                self.inputEmailTextField.text = ""
-                self.inputPasswordTextField.text = ""
-                print(error)
-                return
-            }
-            
-            self.dismiss(animated:true, completion: nil)
-        })
-
-    }
-
-    func registerHandle(){
-        
-        guard let email = inputEmailTextField.text, let password = inputPasswordTextField.text,let username = inputNameTextField.text
-            else{
-                print("please insert the right form ")
-                return
-        }
-        
-        
-        FIRAuth.auth()?.createUser(withEmail: email, password: password, completion: { (user: FIRUser?, error) in
-            if error != nil{
-                print(error)
-                return
-            }
-            
-            guard let uid = user?.uid else{
-                return
-            }
-            
-            let ref = FIRDatabase.database().reference(fromURL: "https://chat-a9541.firebaseio.com/")
-            
-            let userRefs = ref.child("users").child(uid)
-
-            let values = ["name": username,"email": email]
-            
-            userRefs.updateChildValues(values, withCompletionBlock: { (err, ref) in
-                if err != nil{
-                    print(err)
-                    return
-                }
-                
-                self.dismiss(animated: true, completion: nil)
-                
-                print(" saved the user successfuly! ")
-            })
-            
-        })
-    }
     
     let inputNameTextField:UITextField = {
         
@@ -148,11 +88,14 @@ class LoginController: UIViewController {
         return textField
     }()
 
-    let profileImageView :UIImageView = {
+    lazy var profileImageView :UIImageView = {
         let imageView  = UIImageView()
         imageView.image = UIImage(named: "jesus")
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
+        imageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(profileImageViewHandle)))
+        imageView.isUserInteractionEnabled = true
+            
         return imageView
     }()
     
@@ -274,8 +217,8 @@ class LoginController: UIViewController {
         //need x , y , width , height contraints
         profileImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor ).isActive = true
         profileImageView.bottomAnchor.constraint(equalTo: registerSegmentedController.topAnchor).isActive = true
-        profileImageView.widthAnchor.constraint(equalToConstant: 150).isActive = true
-        profileImageView.heightAnchor.constraint(equalToConstant: 150).isActive = true
+        profileImageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        profileImageView.heightAnchor.constraint(equalToConstant: 100).isActive = true
     }
 
 

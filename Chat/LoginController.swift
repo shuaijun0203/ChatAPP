@@ -13,6 +13,8 @@ import FirebaseDatabase
 
 class LoginController: UIViewController {
     
+    var messageController:MessageController?
+    
     let inputsContainerView: UIView = {
         
         let view = UIView()

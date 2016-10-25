@@ -22,6 +22,7 @@
 		ACB3E0BF1DBD9A1B0058E2FF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ACB3E0BE1DBD9A1B0058E2FF /* Assets.xcassets */; };
 		ACB3E0C21DBDC9660058E2FF /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACB3E0C11DBDC9660058E2FF /* User.swift */; };
 		ACB3E0C41DBDDC0D0058E2FF /* LoginController+handlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACB3E0C31DBDDC0D0058E2FF /* LoginController+handlers.swift */; };
+		ACB3E0C71DBF02080058E2FF /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACB3E0C61DBF02080058E2FF /* Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,6 +67,7 @@
 		ACB3E0BE1DBD9A1B0058E2FF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		ACB3E0C11DBDC9660058E2FF /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		ACB3E0C31DBDDC0D0058E2FF /* LoginController+handlers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "LoginController+handlers.swift"; sourceTree = "<group>"; };
+		ACB3E0C61DBF02080058E2FF /* Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		ACE7A6031DBD011200D3C71F /* Chat.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Chat.entitlements; sourceTree = "<group>"; };
 		C96841B0D8B1643C10022CB6 /* Pods-Chat.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chat.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Chat/Pods-Chat.debug.xcconfig"; sourceTree = "<group>"; };
 		E89AFF51C97ED8B4AB8183D4 /* Pods-ChatTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-ChatTests/Pods-ChatTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -148,6 +150,7 @@
 		AC21DD041DB5A98C0095B903 /* Chat */ = {
 			isa = PBXGroup;
 			children = (
+				ACB3E0C51DBF01F60058E2FF /* Util */,
 				ACB3E0C01DBDC9530058E2FF /* Model */,
 				ACE7A6031DBD011200D3C71F /* Chat.entitlements */,
 				AC21DD331DB5AE5C0095B903 /* Controller */,
@@ -196,6 +199,14 @@
 				ACB3E0C11DBDC9660058E2FF /* User.swift */,
 			);
 			name = Model;
+			sourceTree = "<group>";
+		};
+		ACB3E0C51DBF01F60058E2FF /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				ACB3E0C61DBF02080058E2FF /* Extensions.swift */,
+			);
+			name = Util;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -476,6 +487,7 @@
 				AC21DD351DB5AE830095B903 /* LoginController.swift in Sources */,
 				ACB3E0C21DBDC9660058E2FF /* User.swift in Sources */,
 				AC21DD061DB5A98C0095B903 /* AppDelegate.swift in Sources */,
+				ACB3E0C71DBF02080058E2FF /* Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

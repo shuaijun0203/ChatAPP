@@ -61,6 +61,8 @@ extension LoginController : UIImagePickerControllerDelegate,UINavigationControll
                 return
             }
             
+            self.messageController?.fetchUserAndsetupNaviItemTitleBar()
+
             self.dismiss(animated:true, completion: nil)
         })
         
@@ -90,9 +92,8 @@ extension LoginController : UIImagePickerControllerDelegate,UINavigationControll
             
             let firebaseStorageRef = FIRStorage.storage().reference().child(uid+".png")
             
+            if let profileImage = self.profileImageView.image,let uploadData = UIImageJPEGRepresentation(profileImage, 0.1) {
             
-            if let uploadData = UIImagePNGRepresentation(self.profileImageView.image!){
-                
                 firebaseStorageRef.put(uploadData, metadata: nil, completion: { (metadata, error) in
                     if error != nil {
                         print(error)
@@ -105,10 +106,7 @@ extension LoginController : UIImagePickerControllerDelegate,UINavigationControll
                         self.registerUserIntoDatabaseWithUID(uid: uid, values: values as [String : AnyObject])
 
                     }
-                    
-                    
-                    print(metadata)
-                    
+//                    print(metadata)
                 })
 
             }
@@ -127,7 +125,7 @@ extension LoginController : UIImagePickerControllerDelegate,UINavigationControll
                 return
             }
             
-            self.messageController?.setupUserNaviBarTitle() 
+            self.messageController?.fetchUserAndsetupNaviItemTitleBar()
             
             self.dismiss(animated: true, completion: nil)
             

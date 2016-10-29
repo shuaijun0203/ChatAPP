@@ -10,6 +10,7 @@
 		60E5FFFB152572AB562A92F2 /* Pods_ChatUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 91096F02A1D0319519904400 /* Pods_ChatUITests.framework */; };
 		6200DBEE9685B34F0AA4CD6E /* Pods_Chat.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1057D0911828A26C1586839C /* Pods_Chat.framework */; };
 		A468A5A81D1C980FF4382503 /* Pods_ChatTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 13EB64C4E5E2988C0BB9D3BF /* Pods_ChatTests.framework */; };
+		AC1BAFCB1DC3BF5E00AF29E1 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1BAFCA1DC3BF5E00AF29E1 /* Message.swift */; };
 		AC21DD061DB5A98C0095B903 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC21DD051DB5A98C0095B903 /* AppDelegate.swift */; };
 		AC21DD081DB5A98C0095B903 /* MessageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC21DD071DB5A98C0095B903 /* MessageController.swift */; };
 		AC21DD0B1DB5A98C0095B903 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AC21DD091DB5A98C0095B903 /* Main.storyboard */; };
@@ -50,6 +51,7 @@
 		41ABB9BBDD1CA33AFF904B1F /* Pods-Chat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chat.release.xcconfig"; path = "Pods/Target Support Files/Pods-Chat/Pods-Chat.release.xcconfig"; sourceTree = "<group>"; };
 		6DAE83224438EA00DC09DA5B /* Pods-ChatUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ChatUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-ChatUITests/Pods-ChatUITests.release.xcconfig"; sourceTree = "<group>"; };
 		91096F02A1D0319519904400 /* Pods_ChatUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ChatUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		AC1BAFCA1DC3BF5E00AF29E1 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		AC21DD021DB5A98C0095B903 /* Chat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Chat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AC21DD051DB5A98C0095B903 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AC21DD071DB5A98C0095B903 /* MessageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessageController.swift; sourceTree = "<group>"; };
@@ -200,6 +202,7 @@
 			isa = PBXGroup;
 			children = (
 				ACB3E0C11DBDC9660058E2FF /* User.swift */,
+				AC1BAFCA1DC3BF5E00AF29E1 /* Message.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -487,6 +490,7 @@
 				ACECF1C31DC0FD8E00D97302 /* ChatLogController.swift in Sources */,
 				ACB3E0BD1DBD94BE0058E2FF /* NewMessageController.swift in Sources */,
 				AC21DD081DB5A98C0095B903 /* MessageController.swift in Sources */,
+				AC1BAFCB1DC3BF5E00AF29E1 /* Message.swift in Sources */,
 				ACB3E0C41DBDDC0D0058E2FF /* LoginController+handlers.swift in Sources */,
 				AC21DD351DB5AE830095B903 /* LoginController.swift in Sources */,
 				ACB3E0C21DBDC9660058E2FF /* User.swift in Sources */,

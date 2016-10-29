@@ -17,18 +17,65 @@ class MessageController: UITableViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
+        
+        
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(handleLogout))
         
         let newMessageImage = UIImage(named: "newMessage")
-        newMessageImage?.renderingMode
+        
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: newMessageImage, style: .plain, target: self, action: #selector(handleNewMessage))
         
         checkUserIsLogin()
+        
+        obsereAddMessage()
+    }
+    
+    var messages = [Message]()
+    
+    func obsereAddMessage(){
+        
+        let ref = FIRDatabase.database().reference().child("messages")
+        ref.observe(.childAdded, with: { (snapshot) in
+            
+            if let dictionary = snapshot.value as? [String:AnyObject] {
+                let message = Message()
+                message.setValuesForKeys(dictionary)
+                self.messages.append(message)
+                
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
+            }
+            
+            
+            }, withCancel: nil)
+    }
+    
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return messages.count
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let message = messages[indexPath.row]
+        
+        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cellId")
+        
+        if let message = message.message {
+            cell.textLabel?.text = message
+        }
+        
+        if let fromId = message.fromId {
+            cell.detailTextLabel?.text = fromId
+        }
+        
+        return cell
     }
     
     func handleNewMessage(){
         
         let newMessageController = NewMessageController()
+        
+        newMessageController.messageController = self
         
         let newMessageNaviController = UINavigationController(rootViewController: newMessageController)
         
@@ -61,7 +108,6 @@ class MessageController: UITableViewController {
                 self.setupUserNaviBarTitle(user: user)
                 
             }
-            
             
             }) { (error) in
                 print(error)
@@ -96,14 +142,15 @@ class MessageController: UITableViewController {
         
         self.navigationItem.titleView = titleView
         
-        titleView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(createChatLogController)))
+//        titleView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(createChatLogController)))
         
         
     }
     
-    func createChatLogController(){
-        let chatLogController = ChatLogController(collectionViewLayout: UICollectionViewFlowLayout())
+    func createChatLogControllerForUser(user:User){
         
+        let chatLogController = ChatLogController(collectionViewLayout: UICollectionViewFlowLayout())
+        chatLogController.user = user
         navigationController?.pushViewController(chatLogController, animated: true)
         
     }

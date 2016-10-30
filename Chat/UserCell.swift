@@ -93,7 +93,7 @@ class UserCell : UITableViewCell{
         //timeStampLable x,y,width,height
         
         timeStamp.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true
-        timeStamp.topAnchor.constraint(equalTo: self.topAnchor, constant: 3).isActive = true
+        timeStamp.topAnchor.constraint(equalTo: self.topAnchor, constant: -8).isActive = true
         timeStamp.widthAnchor.constraint(equalToConstant: 100).isActive = true
         timeStamp.heightAnchor.constraint(equalTo: self.heightAnchor).isActive = true
         

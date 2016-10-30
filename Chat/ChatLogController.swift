@@ -9,12 +9,50 @@
 import UIKit
 import Firebase
 
-class ChatLogController: UICollectionViewController,UITextFieldDelegate{
+class ChatLogController: UICollectionViewController,UITextFieldDelegate,UICollectionViewDelegateFlowLayout{
+    let cellId = "cellId"
+    var messages = [Message]()
     
     var user: User?{
         didSet{
             navigationItem.title = user?.name
+            
+            obeserveMessage()
         } 
+    }
+    
+    func obeserveMessage(){
+        guard let uid = FIRAuth.auth()?.currentUser?.uid else{
+            return
+        }
+        
+        let userMessageRef = FIRDatabase.database().reference().child("user-messages").child(uid)
+        userMessageRef.observe(.childAdded, with: { (snapshot) in
+            let messageId = snapshot.key
+            let messageRef = FIRDatabase.database().reference().child("messages").child(messageId)
+            messageRef.observeSingleEvent(of: .value, with: { (snapshot) in
+                
+                if let dictionary = snapshot.value as? [String: AnyObject] {
+                    let message = Message()
+                    message.setValuesForKeys(dictionary)
+                    
+                    if message.getPartnerUserId() == self.user?.id {
+                        self.messages.append(message)
+                        DispatchQueue.main.async {
+                            self.collectionView?.reloadData()
+                        }
+                        
+                    }
+                }
+            }, withCancel: { (error) in
+                print(error)
+                return
+            })
+            
+        }) { (error) in
+            print(error)
+            return
+        }
     }
     
     lazy var inputText: UITextField = {
@@ -30,9 +68,80 @@ class ChatLogController: UICollectionViewController,UITextFieldDelegate{
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        collectionView?.backgroundColor = UIColor.lightGray
+        collectionView?.contentInset = UIEdgeInsetsMake(8, 0, 0, 0)
+        collectionView?.scrollIndicatorInsets = UIEdgeInsetsMake(0, 0, 50, 0)
+        collectionView?.register(ChatLogCollectionViewCell.self, forCellWithReuseIdentifier: cellId)
+        collectionView?.backgroundColor = UIColor.white
         
         setupInputComponents()
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return messages.count
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ChatLogCollectionViewCell
+
+        let message = messages[indexPath.row]
+        
+        cell.textView.text = message.message
+        
+        if let message = message.message{
+            
+            cell.bubbleViewWidthAnchor?.constant = self.estimateTextSize(text: message).width + 32
+            
+        }
+        
+        setupCell(cell: cell, message: message)
+        
+        return cell
+    }
+    
+    private func setupCell(cell:ChatLogCollectionViewCell,message:Message){
+        if let chatPartnerProfileImageURL = user?.profileImage {
+            cell.chatPartnerProfileImageView.downloadUIImageWithURLString(urlString: chatPartnerProfileImageURL)
+        }
+        
+        if message.fromId == FIRAuth.auth()?.currentUser?.uid {
+            
+            cell.bubbleView.backgroundColor = ChatLogCollectionViewCell.blueColor
+            cell.textView.textColor = UIColor.white
+            
+            cell.bubbleViewRightAnchor?.isActive = true
+            cell.bubbleViewLeftAnchor?.isActive = false
+            cell.chatPartnerProfileImageView.isHidden = true
+        }else {
+            cell.bubbleView.backgroundColor = UIColor.lightGray
+            cell.textView.textColor = UIColor.black
+            
+            cell.bubbleViewLeftAnchor?.isActive = true
+            cell.bubbleViewRightAnchor?.isActive = false
+            cell.chatPartnerProfileImageView.isHidden = false
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        var height: CGFloat = 70
+        
+        if let message = messages[indexPath.row].message {
+            height = estimateTextSize(text: message).height + 20
+        }
+        
+        return CGSize(width: view.frame.width , height: height)
+    }
+    
+    override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+        collectionView?.collectionViewLayout.invalidateLayout()
+    }
+    
+    func estimateTextSize(text:String) -> CGRect{
+        let size = CGSize(width: 200, height: 1000)
+        
+        let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
+        
+        return NSString(string: text).boundingRect(with: size, options: options, attributes: [NSFontAttributeName:UIFont.systemFont(ofSize: 16)], context: nil)
+        
     }
     
     func setupInputComponents(){
@@ -89,17 +198,20 @@ class ChatLogController: UICollectionViewController,UITextFieldDelegate{
         let fromId = FIRAuth.auth()!.currentUser!.uid
         let toId = user!.id!
         let timeStamp:NSNumber = NSNumber(value: NSDate().timeIntervalSince1970)
-        childRef.updateChildValues(["message":inputText.text!,"fromId":fromId,"toId":toId,"timeStamp":timeStamp])
-        
-        let userMessageRef = FIRDatabase.database().reference().child("user-messages")
-        let userMessageChildRef = userMessageRef.child(fromId)
-        
-        let messageId = childRef.key
-        userMessageChildRef.updateChildValues([messageId:inputText.text!])
-        
-        let recipienMessageRef = FIRDatabase.database().reference().child("user-messages").child(toId)
-        recipienMessageRef.updateChildValues([messageId:inputText.text!])
-        
+        let values = ["message":inputText.text!,"fromId":fromId,"toId":toId,"timeStamp":timeStamp] as [String : Any]
+    
+        childRef.updateChildValues(values) { (error, ref) in
+            
+            self.inputText.text = nil
+            let userMessageRef = FIRDatabase.database().reference().child("user-messages")
+            let userMessageChildRef = userMessageRef.child(fromId)
+            
+            let messageId = childRef.key
+            userMessageChildRef.updateChildValues([messageId:self.inputText.text!])
+            
+            let recipienMessageRef = FIRDatabase.database().reference().child("user-messages").child(toId)
+            recipienMessageRef.updateChildValues([messageId:self.inputText.text!])
+        }
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

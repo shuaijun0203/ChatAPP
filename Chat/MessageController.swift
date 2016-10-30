@@ -12,6 +12,8 @@ import FirebaseAuth
 import FirebaseDatabase
 
 class MessageController: UITableViewController {
+    
+    let cellId = "cellId"
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,22 +27,77 @@ class MessageController: UITableViewController {
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: newMessageImage, style: .plain, target: self, action: #selector(handleNewMessage))
         
+        tableView.register(UserCell.self, forCellReuseIdentifier: cellId)
         checkUserIsLogin()
         
-        obsereAddMessage()
     }
     
     var messages = [Message]()
+    var messageDicitonary = [String:Message]()
+    
+    func obsereUserMessages(){
+        guard let uid = FIRAuth.auth()?.currentUser?.uid else {
+            return
+        }
+        print(uid)
+        let userMessageRef = FIRDatabase.database().reference().child("user-messages").child(uid)
+        
+        userMessageRef.observe(.childAdded, with: { (snapshot) in
+            print(snapshot)
+            
+            let messageId = snapshot.key
+            let messageRef = FIRDatabase.database().reference().child("messages").child(messageId)
+            
+            messageRef.observeSingleEvent(of: .value, with: { (snapshot) in
+                print(snapshot)
+
+                if let dictionary = snapshot.value as? [String:AnyObject] {
+                    let message = Message()
+                    message.setValuesForKeys(dictionary)
+                    print(message)
+                    if let toId = message.toId {
+                        
+                        self.messageDicitonary[toId] = message
+                        self.messages = Array(self.messageDicitonary.values)
+                        self.messages.sort(by: { (message1, message2) -> Bool in
+                            
+                        return (message1.timeStamp?.intValue)! > (message2.timeStamp?.intValue)!
+                        })
+                    }
+                    
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                    }
+                }
+
+                
+            }, withCancel: nil)
+            
+            
+            
+        }, withCancel: nil)
+
+    }
     
     func obsereAddMessage(){
         
         let ref = FIRDatabase.database().reference().child("messages")
+        
         ref.observe(.childAdded, with: { (snapshot) in
             
             if let dictionary = snapshot.value as? [String:AnyObject] {
                 let message = Message()
                 message.setValuesForKeys(dictionary)
-                self.messages.append(message)
+                
+                if let toId = message.toId {
+                    
+                    self.messageDicitonary[toId] = message
+                    self.messages = Array(self.messageDicitonary.values)
+                    self.messages.sort(by: { (message1, message2) -> Bool in
+                        
+                    return (message1.timeStamp?.intValue)! > (message2.timeStamp?.intValue)!
+                    })
+                }
                 
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
@@ -51,6 +108,18 @@ class MessageController: UITableViewController {
             }, withCancel: nil)
     }
     
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 56
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        print(123)
+        
+    }
+
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return messages.count
     }
@@ -58,15 +127,9 @@ class MessageController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let message = messages[indexPath.row]
         
-        let cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cellId")
         
-        if let message = message.message {
-            cell.textLabel?.text = message
-        }
-        
-        if let fromId = message.fromId {
-            cell.detailTextLabel?.text = fromId
-        }
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! UserCell
+        cell.message = message
         
         return cell
     }
@@ -116,6 +179,13 @@ class MessageController: UITableViewController {
     }
     
     func setupUserNaviBarTitle(user:User){
+        
+        messages.removeAll()
+        messageDicitonary.removeAll()
+        tableView.reloadData()
+        
+        obsereUserMessages()
+
         
         let titleView = UIView()
         titleView.frame = CGRect(x: 0, y: 0, width: 100, height: 40)

@@ -40,40 +40,61 @@ class MessageController: UITableViewController {
         let userMessageRef = FIRDatabase.database().reference().child("user-messages").child(uid)
         
         userMessageRef.observe(.childAdded, with: { (snapshot) in
-            let messageId = snapshot.key
-            let messageRef = FIRDatabase.database().reference().child("messages").child(messageId)
             
-            messageRef.observeSingleEvent(of: .value, with: { (snapshot) in
+            let userId = snapshot.key
+            
+            let newUserMessagesRef = FIRDatabase.database().reference().child("user-messages").child(uid).child(userId).observe(.childAdded, with: { (snapshot) in
+
+                let messageId = snapshot.key
+                let messageRef = FIRDatabase.database().reference().child("messages").child(messageId)
                 
-                if let dictionary = snapshot.value as? [String:AnyObject] {
-                    let message = Message()
-                    message.setValuesForKeys(dictionary)
+                messageRef.observeSingleEvent(of: .value, with: { (snapshot) in
                     
-                    if let chatPartnerId = message.getPartnerUserId() {
+                    if let dictionary = snapshot.value as? [String:AnyObject] {
+                        let message = Message()
+                        message.setValuesForKeys(dictionary)
                         
-                        self.messageDicitonary[chatPartnerId] = message
-                        self.messages = Array(self.messageDicitonary.values)
-                        self.messages.sort(by: { (message1, message2) -> Bool in
-                        return (message1.timeStamp?.intValue)! > (message2.timeStamp?.intValue)!
-                        })
+                        if let chatPartnerId = message.getPartnerUserId() {
+                            
+                            self.messageDicitonary[chatPartnerId] = message
+                            
+                        }
+                        
+                        self.attempToRefeshTable()
+                        
+                        DispatchQueue.main.async {
+                            self.tableView.reloadData()
+                        }
                     }
-                    
-                    
-                    Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: #selector(self.messageReloadTimerTrigger), userInfo: nil, repeats: false)
-                    
-                    DispatchQueue.main.async {
-                        self.tableView.reloadData()
-                    }
-                }
-            }, withCancel: nil)
+                }, withCancel: nil)
+            
+            }, withCancel: { (error) in
+                print(error)
+                return
+            })
+
         }, withCancel: nil)
     }
     
+    var timer: Timer?
+    
     func messageReloadTimerTrigger(){
+        self.messages = Array(self.messageDicitonary.values)
+        self.messages.sort(by: { (message1, message2) -> Bool in
+            return (message1.timeStamp?.intValue)! > (message2.timeStamp?.intValue)!
+        })
+        
         DispatchQueue.main.async {
             print("bangbangbang")
             self.tableView.reloadData()
         }
+    }
+    
+    private func attempToRefeshTable(){
+    
+    self.timer?.invalidate()
+    
+    self.timer = Timer.scheduledTimer(timeInterval: 0.01, target: self, selector: #selector(self.messageReloadTimerTrigger), userInfo: nil, repeats: false)
     }
     
     func obsereAddMessage(){

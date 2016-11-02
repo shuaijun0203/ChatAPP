@@ -22,11 +22,11 @@ class ChatLogController: UICollectionViewController,UITextFieldDelegate,UICollec
     }
     
     func obeserveMessage(){
-        guard let uid = FIRAuth.auth()?.currentUser?.uid else{
+        guard let uid = FIRAuth.auth()?.currentUser?.uid, let toId = user?.id else{
             return
         }
         
-        let userMessageRef = FIRDatabase.database().reference().child("user-messages").child(uid)
+        let userMessageRef = FIRDatabase.database().reference().child("user-messages").child(uid).child(toId)
         userMessageRef.observe(.childAdded, with: { (snapshot) in
             let messageId = snapshot.key
             let messageRef = FIRDatabase.database().reference().child("messages").child(messageId)
@@ -59,7 +59,7 @@ class ChatLogController: UICollectionViewController,UITextFieldDelegate,UICollec
         let messageInputTextField = UITextField()
         messageInputTextField.placeholder = " Enter the Message... "
         messageInputTextField.translatesAutoresizingMaskIntoConstraints = false
-        messageInputTextField.delegate = self 
+        messageInputTextField.delegate = self
         return messageInputTextField
     }()
     
@@ -68,18 +68,17 @@ class ChatLogController: UICollectionViewController,UITextFieldDelegate,UICollec
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        collectionView?.contentInset = UIEdgeInsetsMake(8, 0, 58, 0)
-        collectionView?.scrollIndicatorInsets = UIEdgeInsetsMake(0, 0, 50, 0)
+        collectionView?.contentInset = UIEdgeInsetsMake(8, 0, 8, 0)
+//        collectionView?.scrollIndicatorInsets = UIEdgeInsetsMake(0, 0, 50, 0)
         collectionView?.alwaysBounceVertical = true
         collectionView?.register(ChatLogCollectionViewCell.self, forCellWithReuseIdentifier: cellId)
         collectionView?.backgroundColor = UIColor.white
         
-//        setupInputComponents()
+        setupInputComponents()
         
-//        setKeyboardShowAndHideObsever()
+        setKeyboardShowAndHideObsever()
+//        collectionView?.keyboardDismissMode = .interactive
         
-        collectionView?.keyboardDismissMode = .interactive
-
         
     }
     
@@ -126,14 +125,10 @@ class ChatLogController: UICollectionViewController,UITextFieldDelegate,UICollec
     
     override var inputAccessoryView: UIView? {
         get {
-
-            return inputContainerView
-            
+            return nil
+//            return inputContainerView
         }
-        
-        
     }
-    
     
     override func becomeFirstResponder() -> Bool {
         return true
@@ -304,12 +299,12 @@ class ChatLogController: UICollectionViewController,UITextFieldDelegate,UICollec
             
             self.inputText.text = nil
             let userMessageRef = FIRDatabase.database().reference().child("user-messages")
-            let userMessageChildRef = userMessageRef.child(fromId)
+            let userMessageChildRef = userMessageRef.child(fromId).child(toId)
             
             let messageId = childRef.key
             userMessageChildRef.updateChildValues([messageId:self.inputText.text!])
             
-            let recipienMessageRef = FIRDatabase.database().reference().child("user-messages").child(toId)
+            let recipienMessageRef = FIRDatabase.database().reference().child("user-messages").child(toId).child(fromId)
             recipienMessageRef.updateChildValues([messageId:self.inputText.text!])
         }
     }

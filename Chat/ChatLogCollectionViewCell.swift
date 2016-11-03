@@ -10,6 +10,8 @@ import UIKit
 
 class ChatLogCollectionViewCell: UICollectionViewCell {
     
+    var chatLogController : ChatLogController?
+    
     let textView : UITextView = {
         let tv = UITextView()
         tv.font = UIFont.systemFont(ofSize: 16)
@@ -17,7 +19,7 @@ class ChatLogCollectionViewCell: UICollectionViewCell {
         tv.backgroundColor = UIColor.lightGray
         tv.translatesAutoresizingMaskIntoConstraints = false
         tv.backgroundColor = UIColor.clear
-        
+        tv.isEditable = false
         return tv
     }()
     
@@ -36,7 +38,6 @@ class ChatLogCollectionViewCell: UICollectionViewCell {
     let chatPartnerProfileImageView : UIImageView = {
         let profileImageView = UIImageView()
         profileImageView.translatesAutoresizingMaskIntoConstraints = false
-        profileImageView.image = UIImage(named: "jesus")
         profileImageView.layer.cornerRadius = 16
         profileImageView.layer.masksToBounds = true
         profileImageView.contentMode = .scaleAspectFill
@@ -44,16 +45,44 @@ class ChatLogCollectionViewCell: UICollectionViewCell {
         return profileImageView
     }()
     
+    
+    lazy var  imageMessageView :UIImageView = {
+        let imageMessage = UIImageView()
+        imageMessage.translatesAutoresizingMaskIntoConstraints = false
+        imageMessage.layer.cornerRadius = 16
+        imageMessage.layer.masksToBounds = true
+        imageMessage.contentMode = .scaleAspectFill
+        imageMessage.backgroundColor = UIColor.gray
+        imageMessage.isUserInteractionEnabled = true
+        imageMessage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleZoomInImage)))
+        
+        return imageMessage
+    }()
+    
     var bubbleViewWidthAnchor: NSLayoutConstraint?
     var bubbleViewRightAnchor: NSLayoutConstraint?
     var bubbleViewLeftAnchor: NSLayoutConstraint?
     
+    func handleZoomInImage(tapGesture:UITapGestureRecognizer){
+        if let imageView = tapGesture.view as? UIImageView {
+            
+            chatLogController?.handleStaringZoomInImageView(image: imageView)
+
+        }
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.addSubview(bubbleView)
         self.addSubview(textView)
         self.addSubview(chatPartnerProfileImageView)
+        
+        bubbleView.addSubview(imageMessageView)
+        
+        imageMessageView.leftAnchor.constraint(equalTo: bubbleView.leftAnchor).isActive = true
+        imageMessageView.topAnchor.constraint(equalTo: bubbleView.topAnchor).isActive = true
+        imageMessageView.widthAnchor.constraint(equalTo: bubbleView.widthAnchor).isActive = true
+        imageMessageView.heightAnchor.constraint(equalTo: bubbleView.heightAnchor).isActive = true
         
         chatPartnerProfileImageView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 4).isActive = true
         chatPartnerProfileImageView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true

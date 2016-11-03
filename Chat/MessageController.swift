@@ -51,7 +51,7 @@ class MessageController: UITableViewController {
                 messageRef.observeSingleEvent(of: .value, with: { (snapshot) in
                     
                     if let dictionary = snapshot.value as? [String:AnyObject] {
-                        let message = Message()
+                        let message = Message(dictionary: dictionary)
                         message.setValuesForKeys(dictionary)
                         
                         if let chatPartnerId = message.getPartnerUserId() {
@@ -104,9 +104,7 @@ class MessageController: UITableViewController {
         ref.observe(.childAdded, with: { (snapshot) in
             
             if let dictionary = snapshot.value as? [String:AnyObject] {
-                let message = Message()
-                message.setValuesForKeys(dictionary)
-                
+                let message = Message(dictionary: dictionary)                
                 if let toId = message.toId {
                     
                     self.messageDicitonary[toId] = message

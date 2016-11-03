@@ -57,7 +57,6 @@ extension LoginController : UIImagePickerControllerDelegate,UINavigationControll
             if user?.uid == nil {
                 self.inputEmailTextField.text = ""
                 self.inputPasswordTextField.text = ""
-                print(error)
                 return
             }
             
@@ -79,7 +78,7 @@ extension LoginController : UIImagePickerControllerDelegate,UINavigationControll
         
         FIRAuth.auth()?.createUser(withEmail: email, password: password, completion: { (user: FIRUser?, error) in
             if error != nil{
-                print(error)
+                print(error as Any)
                 return
             }
             
@@ -96,7 +95,7 @@ extension LoginController : UIImagePickerControllerDelegate,UINavigationControll
             
                 firebaseStorageRef.put(uploadData, metadata: nil, completion: { (metadata, error) in
                     if error != nil {
-                        print(error)
+                        print(error as Any)
                         return
                     }
                     

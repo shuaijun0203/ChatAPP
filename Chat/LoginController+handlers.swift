@@ -120,7 +120,7 @@ extension LoginController : UIImagePickerControllerDelegate,UINavigationControll
         
         userRefs.updateChildValues(values, withCompletionBlock: { (err, ref) in
             if err != nil{
-                print(err)
+                print(err as Any)
                 return
             }
             

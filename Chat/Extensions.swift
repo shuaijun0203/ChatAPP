@@ -25,7 +25,7 @@ extension UIImageView {
         URLSession.shared.dataTask(with: profileImageUrl! as URL, completionHandler: { (data, response, error) in
             
             if error != nil{
-                print(error)
+                print(error as Any)
                 return
             }
             

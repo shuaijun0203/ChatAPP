@@ -43,7 +43,7 @@ class MessageController: UITableViewController {
             
             let userId = snapshot.key
             
-            let newUserMessagesRef = FIRDatabase.database().reference().child("user-messages").child(uid).child(userId).observe(.childAdded, with: { (snapshot) in
+            _ = FIRDatabase.database().reference().child("user-messages").child(uid).child(userId).observe(.childAdded, with: { (snapshot) in
 
                 let messageId = snapshot.key
                 let messageRef = FIRDatabase.database().reference().child("messages").child(messageId)

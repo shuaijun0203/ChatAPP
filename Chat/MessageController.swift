@@ -28,6 +28,36 @@ class MessageController: UITableViewController {
         tableView.register(UserCell.self, forCellReuseIdentifier: cellId)
         checkUserIsLogin()
         
+        tableView.allowsMultipleSelectionDuringEditing = true
+        
+    }
+    
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        
+        let message = messages[indexPath.row]
+        
+        guard let userId = FIRAuth.auth()?.currentUser?.uid else {
+            return
+        }
+        
+        if let chatPartnerUserId = message.getPartnerUserId() {
+            FIRDatabase.database().reference().child("user-messages").child(userId).child(chatPartnerUserId).removeValue(completionBlock: { (error, ref) in
+                
+                
+                // wrong way.
+                //self.messages.remove(at: indexPath.row)
+                //self.tableView.deleteRows(at: [indexPath], with: .automatic)
+                
+                self.messageDicitonary.removeValue(forKey: chatPartnerUserId)
+                self.attempToRefeshTable()
+            })
+            
+            
+        }
     }
     
     var messages = [Message]()
@@ -74,6 +104,13 @@ class MessageController: UITableViewController {
             })
 
         }, withCancel: nil)
+        
+        userMessageRef.observe(.childRemoved, with: { (snapshot) in
+            
+            self.messageDicitonary.removeValue(forKey: snapshot.key)
+            self.attempToRefeshTable()
+            
+        })
     }
     
     var timer: Timer?

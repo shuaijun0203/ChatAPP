@@ -7,10 +7,58 @@
 //
 
 import UIKit
+import AVFoundation
 
 class ChatLogCollectionViewCell: UICollectionViewCell {
     
     var chatLogController : ChatLogController?
+    
+    var message: Message?
+    
+    // progressStatusIndicator
+    let videoLoadingStatusIndicator : UIActivityIndicatorView  = {
+        let aiv = UIActivityIndicatorView(activityIndicatorStyle: .whiteLarge)
+        aiv.translatesAutoresizingMaskIntoConstraints = false
+        
+        return aiv
+    }()
+    
+    lazy var videoPlayButton: UIButton = {
+        let button = UIButton(type: UIButtonType.system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.tintColor = UIColor.white
+        let icon = UIImage(named: "play-button")
+        button.setImage(icon, for: .normal)
+        button.addTarget(self, action: #selector(handleVideoPlay), for:.touchUpInside)
+        
+        return button
+    }()
+    
+    var avPlayerLayer: AVPlayerLayer?
+    var avPlayer: AVPlayer?
+    
+    func handleVideoPlay(){
+        
+        if let videoURL = message?.videoUrl,let url = NSURL(string: videoURL) {
+            
+            avPlayer = AVPlayer(url: url as URL)
+            avPlayerLayer = AVPlayerLayer(player: avPlayer!)
+            avPlayerLayer?.frame = bubbleView.bounds
+            bubbleView.layer.addSublayer(avPlayerLayer!)
+            
+            avPlayer?.play()
+            videoLoadingStatusIndicator.startAnimating()
+            videoPlayButton.isHidden = true
+        }
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+         
+        avPlayerLayer?.removeFromSuperlayer()
+        avPlayer?.pause()
+        videoLoadingStatusIndicator.stopAnimating()
+    }
     
     let textView : UITextView = {
         let tv = UITextView()
@@ -78,6 +126,20 @@ class ChatLogCollectionViewCell: UICollectionViewCell {
         self.addSubview(chatPartnerProfileImageView)
         
         bubbleView.addSubview(imageMessageView)
+        bubbleView.addSubview(videoPlayButton)
+        bubbleView.addSubview(videoLoadingStatusIndicator)
+        
+        videoPlayButton.centerXAnchor.constraint(equalTo: bubbleView.centerXAnchor).isActive = true
+        videoPlayButton.centerYAnchor.constraint(equalTo: bubbleView.centerYAnchor).isActive = true
+        videoPlayButton.widthAnchor.constraint(equalToConstant: 50).isActive = true
+        videoPlayButton.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+        videoLoadingStatusIndicator.centerXAnchor.constraint(equalTo: bubbleView.centerXAnchor).isActive = true
+        videoLoadingStatusIndicator.centerYAnchor.constraint(equalTo: bubbleView.centerYAnchor).isActive = true
+        videoLoadingStatusIndicator.widthAnchor.constraint(equalToConstant: 50).isActive = true
+        videoLoadingStatusIndicator.heightAnchor.constraint(equalToConstant: 50).isActive = true
+
+        
         
         imageMessageView.leftAnchor.constraint(equalTo: bubbleView.leftAnchor).isActive = true
         imageMessageView.topAnchor.constraint(equalTo: bubbleView.topAnchor).isActive = true

@@ -16,6 +16,7 @@ class Message: NSObject {
     var message:String?
     
     var imageUrl:String?
+    var videoUrl:String?
     var imageWidth: NSNumber?
     var imageHeight: NSNumber?
     
@@ -28,6 +29,7 @@ class Message: NSObject {
         fromId = dictionary["fromId"] as? String
         toId = dictionary["toId"] as? String
         imageUrl = dictionary["imageUrl"] as? String
+        videoUrl = dictionary["videoUrl"] as? String
         message = dictionary["message"] as? String
         timeStamp = dictionary["timeStamp"] as? NSNumber
         imageWidth = dictionary["imageWidth"] as? NSNumber
